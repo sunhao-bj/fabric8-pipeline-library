@@ -23,6 +23,8 @@ def call(body) {
         def groupId = m.groupId.split( '\\.' )
         def user = groupId[groupId.size()-1].trim()
         def artifactId = m.artifactId
+        def utils = new Utils()
+        def namespace = utils.getNamespace()
 
        if (!s2iMode) {
            sh "docker push ${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${env.JOB_NAME}:${config.version}"
