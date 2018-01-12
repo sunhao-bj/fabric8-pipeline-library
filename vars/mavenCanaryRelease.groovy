@@ -28,7 +28,7 @@ def call(body) {
     } else {
       if (!s2iMode) {
         retry(3){
-          sh "docker push ${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${user}/${artifactId}:${config.version}"
+          sh "docker push ${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${env.JOB_NAME}:${config.version}"
         }
       }
     }
