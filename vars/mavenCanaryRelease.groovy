@@ -1,4 +1,6 @@
 #!/usr/bin/groovy
+import io.fabric8.Utils
+
 def call(body) {
     // evaluate the body block, and collect configuration into the object
     def config = [:]
@@ -27,6 +29,8 @@ def call(body) {
        }
     } else {
       if (!s2iMode) {
+          def utils = new Utils()
+          def namespace = utils.getNamespace()
         retry(3){
           sh "docker push ${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${env.JOB_NAME}:${config.version}"
         }
