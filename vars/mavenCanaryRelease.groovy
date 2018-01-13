@@ -33,6 +33,8 @@ def call(body) {
           def utils = new Utils()
           def namespace = utils.getNamespace()
         retry(3){
+            sh "docker build -t ${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${env.JOB_NAME}:${config.version} ."
+            sh "docker images"
           sh "docker push ${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${env.JOB_NAME}:${config.version}"
         }
       }
