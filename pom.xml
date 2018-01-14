@@ -73,11 +73,10 @@
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
 
-    <fabric8.devops.version>2.2.335</fabric8.devops.version>
-    <fabric8.version>2.2.209</fabric8.version>
+    <fabric8.devops.version>2.2.311</fabric8.devops.version>
+    <fabric8.version>2.2.168</fabric8.version>
     <fabric8.maven.plugin.version>3.1.66</fabric8.maven.plugin.version>
-    <workflow-job.verion>2.10</workflow-job.verion>
-    <openshift-sync.version>0.1.12</openshift-sync.version>
+
     <gmavenVersion>1.4</gmavenVersion>
     <gmavenProviderSelection>2.0</gmavenProviderSelection>
 
@@ -113,10 +112,6 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-    </repository>
-    <repository>
-      <id>jenkins</id>
-      <url>http://repo.jenkins-ci.org/releases/</url>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -204,16 +199,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.jenkins-ci.plugins.workflow</groupId>
-        <artifactId>workflow-job</artifactId>
-        <version>${workflow-job.verion}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8.jenkins.plugins</groupId>
-        <artifactId>openshift-sync</artifactId>
-        <version>${openshift-sync.version}</version>
-      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -226,18 +212,7 @@
       <groupId>io.fabric8</groupId>
       <artifactId>openshift-client</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.fabric8</groupId>
-      <artifactId>kubernetes-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jenkins-ci.plugins.workflow</groupId>
-      <artifactId>workflow-job</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.fabric8.jenkins.plugins</groupId>
-      <artifactId>openshift-sync</artifactId>
-    </dependency>
+
     <!-- I think this is the version jenkins piplines uses? -->
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
@@ -250,19 +225,9 @@
       <version>2.4.3</version>
     </dependency>
     <dependency>
-      <groupId>org.jenkins-ci.main</groupId>
-      <artifactId>jenkins-core</artifactId>
-      <version>2.47</version>
-    </dependency>
-    <dependency>
       <groupId>com.cloudbees</groupId>
       <artifactId>groovy-cps</artifactId>
       <version>1.11</version>
-    </dependency>
-    <dependency>
-      <groupId>org.csanchez.jenkins.plugins</groupId>
-      <artifactId>kubernetes</artifactId>
-      <version>0.12</version>
     </dependency>
   </dependencies>
 

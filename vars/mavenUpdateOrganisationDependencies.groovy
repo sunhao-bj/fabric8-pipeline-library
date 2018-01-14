@@ -15,9 +15,7 @@ def call(body) {
     body()
 
     def organisation = config.organisation
-    def repoNames = config.repos
     def pomLocation = 'pom.xml'
-    def containerName = config.containerName ?: 'clients'
 
     def flow = new Fabric8Commands()
 
@@ -30,15 +28,9 @@ def call(body) {
     if (replaceVersions.size() > 0) {
         println "Now updating all projects within organisation: ${organisation}"
 
-        def repos;
-        if (repoNames?.trim()){
-            repos = repoNames.split(',')
-        }else {
-           repos = getRepos(organisation)
-        }
+        def repos = getRepos(organisation)
 
         for (repo in repos) {
-            repo = repo.toString().trim()
             def project = "${organisation}/${repo}"
 
             // lets check if the repo has a pom.xml
@@ -77,7 +69,7 @@ def call(body) {
 
                     //sh "cat ${repo}/${pomLocation}"
 
-                    container(name: containerName) {
+                    container(name: 'clients') {
 
                         sh 'chmod 600 /root/.ssh-git/ssh-key'
                         sh 'chmod 600 /root/.ssh-git/ssh-key.pub'
@@ -86,17 +78,13 @@ def call(body) {
                         sh "git config --global user.email fabric8-admin@googlegroups.com"
                         sh "git config --global user.name fabric8-release"
 
+                        def githubToken = flow.getGitHubToken()
                         def message = "\"Update pom property versions\""
                         sh "cd ${repo} && git add ${pomLocation}"
                         sh "cd ${repo} && git commit -m ${message}"
                         sh "cd ${repo} && git push origin versionUpdate${uid}"
                         retry(5) {
-                            String ghToken = readFile '/home/jenkins/.apitoken/hub'
-                            wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [
-                                [password: ghToken, var: 'GH_PASSWORD']]]) {
-
-                                sh "export GITHUB_TOKEN=${ghToken} && cd ${repo} && hub pull-request -m ${message} > pr.txt"
-                            }   
+                            sh "export GITHUB_TOKEN=${githubToken} && cd ${repo} && hub pull-request -m ${message} > pr.txt"
                         }
                     }
                     pr = readFile("${repo}/pr.txt")

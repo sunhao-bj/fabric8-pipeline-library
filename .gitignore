@@ -9,8 +9,6 @@
 *.ear
 .idea
 .idea/*
-.settings
-.project
 
 *.iml
 

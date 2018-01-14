@@ -7,17 +7,17 @@ def call(body) {
     body.delegate = config
     body()
 
-    def timeoutTime= config.timeoutTime ?: 24
-    def proceedMessage = """Would you like to promote version ${config.version} to the next environment?
+    def proceedMessage = """Version ${config.version} has now been deployed to the ${config.environment} environment at:
+${config.console}/kubernetes/pods?environment=${config.environment}
+
+Would you like to promote version ${config.version} to the Production namespace?
 """
 
-    hubotApprove message: proceedMessage, failOnError: false
+    hubotApprove message: proceedMessage, room: config.room
     def id = approveRequestedEvent(app: "${env.JOB_NAME}", environment: config.environment)
 
     try {
-        timeout(time: timeoutTime, unit: 'HOURS') {
-            input id: 'Proceed', message: "\n${proceedMessage}"
-        }
+        input id: 'Proceed', message: "\n${proceedMessage}"
     } catch (err) {
         approveReceivedEvent(id: id, approved: false)
         throw err

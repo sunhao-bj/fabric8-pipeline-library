@@ -28,17 +28,6 @@ def call(body) {
         authString = githubToken
         url = apiUrl
       }
-
-      if (rs.merged == true){
-          echo "PR ${id} merged"
-          return true
-      }
-
-      if (rs.state == 'closed'){
-          echo "PR ${id} closed"
-          return true
-      }
-
       branchName = rs.head.ref
       def sha = rs.head.sha
       echo "checking status of commit ${sha}"
@@ -70,7 +59,7 @@ git push origin fixPR${id}:${branchName}
 ```
 """
 
-       hubotSend message: message, failOnError: false
+       hubot room: 'release', message: message
             def shouldWeWait = requestResolve()
 
             if (!shouldWeWait){
@@ -102,8 +91,10 @@ Alternatively you can skip this conflict.  This is highly discouraged but maybe 
 To do this chose the abort option below, note this particular action will not abort the release and only skip this conflict.
 '''
 
-    try{
-        hubotApprove message: proceedMessage, failOnError: false
+    hubotApprove message: proceedMessage, room: 'release'
+
+    try {
+        input id: 'Proceed', message: "\n${proceedMessage}"
         return true
     } catch (err) {
         echo 'Skipping conflict'

@@ -14,8 +14,6 @@ def call(body) {
   def flow = new io.fabric8.Fabric8Commands()
 
   def pomLocation = config.parentPomLocation ?: 'pom.xml'
-  def containerName = config.containerName ?: 'clients'
-  def autoMerge = config.autoMerge ?: false
 
   for (int i = 0; i < config.projects.size(); i++) {
     def project = config.projects[i]
@@ -42,7 +40,7 @@ def call(body) {
 
       sh "cat ${repo}/${pomLocation}"
 
-      container(name: containerName) {
+      container(name: 'clients') {
 
         sh 'chmod 600 /root/.ssh-git/ssh-key'
         sh 'chmod 600 /root/.ssh-git/ssh-key.pub'
@@ -51,6 +49,7 @@ def call(body) {
         sh "git config --global user.email fabric8-admin@googlegroups.com"
         sh "git config --global user.name fabric8-release"
 
+        def githubToken = flow.getGitHubToken()
         def message = "Update pom property ${config.propertyName} to ${config.version}"
         sh "cd ${repo} && git add ${pomLocation}"
         sh "cd ${repo} && git commit -m \"${message}\""
@@ -59,16 +58,11 @@ def call(body) {
         id = flow.createPullRequest("${message}","${project}","versionUpdate${uid}")
       }
       echo "received Pull Request Id: ${id}"
+      flow.addMergeCommentToPullRequest(id, project)
 
-      if (autoMerge){
-        sleep 5 // give a bit of time for GitHub to get itself in order after the new PR
-        flow.mergePR(project, id)
-      } else {
-        flow.addMergeCommentToPullRequest(id, project)
-        waitUntilPullRequestMerged{
-          name = project
-          prId = id
-        }
+      waitUntilPullRequestMerged{
+        name = project
+        prId = id
       }
     }
   }

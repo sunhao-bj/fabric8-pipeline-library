@@ -11,9 +11,8 @@ def call(body) {
   def releaseVersion
   def extraStageImages = config.extraImagesToStage ?: []
   def extraSetVersionArgs = config.setVersionExtraArgs ?: ""
-  def containerName = config.containerName ?: 'maven'
 
-  container(name: containerName) {
+  container(name: 'maven') {
 
     sh 'chmod 600 /root/.ssh-git/ssh-key'
     sh 'chmod 600 /root/.ssh-git/ssh-key.pub'

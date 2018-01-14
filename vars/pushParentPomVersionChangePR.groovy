@@ -12,7 +12,6 @@ def call(body) {
 
     def flow = new io.fabric8.Fabric8Commands()
     def pomLocation = config.parentPomLocation ?: 'pom.xml'
-    def containerName = config.containerName ?: 'clients'
     def id
 
     for(int i = 0; i < config.projects.size(); i++){
@@ -37,7 +36,7 @@ def call(body) {
 
       sh "cat ${repo}/${pomLocation}"
 
-        container(name: containerName) {
+        container(name: 'clients') {
 
           sh 'chmod 600 /root/.ssh-git/ssh-key'
           sh 'chmod 600 /root/.ssh-git/ssh-key.pub'

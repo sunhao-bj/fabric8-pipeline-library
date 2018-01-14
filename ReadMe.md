@@ -10,7 +10,6 @@
       - [Approve](#approve)
       - [Deploy Project](#deploy-project)
       - [Drop Project](#drop-project)
-      - [Get Deployment Resources](#get-deployment-resources)
       - [Get Kubernetes JSON](#get-kubernetes-json)
       - [Get New Version](#get-new-version)
       - [Maven Canary Release](#maven-canary-release)
@@ -30,16 +29,16 @@
       - [Git Tag](#git-tag)
       - [Deploy Remote OpenShift](#deploy-remote-openshift)
       - [Deploy Remote Kubernetes](#deploy-remote-kubernetes)
-      - [Add Annotation To Build](#add-annotation-to-build)
   - [Understanding how it works](#understanding-how-it-works)
-    - [Template vs Node](#template-vs-node)
-      - [Maven Node](#maven-node)
-      - [Docker Node](#docker-node)
-      - [Clients Node](#clients-node)
-      - [Release Node](#release-node)
-    - [Mixing and matching](#mixing-and-matching)
-    - [Creating and using your own templates](#creating-and-using-your-own-templates)
-      - [Using the Jenkins Administration Console](#using-the-jenkins-administration-console)
+      - [Templates vs Nodes](#templates-vs-nodes)
+        - [Maven Node](#maven-node)
+        - [Docker Node](#docker-node)
+        - [Clients Node](#clients-node)
+        - [Release Node](#release-node)
+      - [Mixing and Matching](#mixing-and-matching)        
+      - [Creating and using your own templates](#creating-and-using-your-own-templates)
+        - [Using the Jenkins Administration Console](#using the jenkins administration console)
+                   
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -57,12 +56,10 @@ The idea is to try promote sharing of scripts across projects where it makes sen
 
 ## How to use this library
 
-This library is intended to be used with fabric8's Jenkins image that is deployed as part of the [fabric8 platform](https://fabric8.io).
-
 To use the functions in this library just add the following to the top of your `Jenkinsfile`:
 
 ```groovy
-@Library('github.com/fabric8io/fabric8-pipeline-library@master') _
+@Library('github.com/fabric8io/fabric8-pipeline-library@master')
 ```
 
 That will use the master branch of this library. You can if you wish pick a specific [tag](https://github.com/fabric8io/fabric8-pipeline-library/tags) or [commit SHA](https://github.com/fabric8io/fabric8-pipeline-library/commits/master) of this repository too.
@@ -120,26 +117,7 @@ in the case of an aborted approval
       pullRequestId = '1234'
     }
 ```
-#### Get Deployment Resources
-
-- returns a default OpenShift or Kubernetes YAML that can be used by kubernetes-workflow apply step
-- returns a service, deployment / deployment config YAML using sensible defaults
-- can be used in conjunction with [kubernetesApply](https://github.com/jenkinsci/kubernetes-pipeline-plugin/blob/master/devops-steps/readme.md#applying-kubernetes-configuration)
-```groovy
-    node {
-        def resources = getDeploymentResources {
-          port = 8080
-          label = 'node'
-          icon = 'https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg'
-          version = '0.0.1'
-        }
-
-        kubernetesApply(file: resources, environment: 'my-cool-app-staging', registry: 'myexternalregistry.io:5000')
-    }
-```
 #### Get Kubernetes JSON
-
-__WARNING this function is deprecated.  Please change to use getDeploymentResources{}__
 
 - returns a default OpenShift templates that gets translated into Kubernetes List when applied by kubernetes-workflow apply step and running on Kubernetes
 - returns a service and replication controller JSON using sensible defaults
@@ -373,7 +351,7 @@ Now that we don't store the next release version in the poms we need to figure i
 
 Deploys the staged fabric8 release to a remote OpenShift cluster
 
-__NOTE__ in order for images to be found by the remote OpenShift instance it must be able to pull images from the staging docker registry.  Noting private networks and insecure-registry flags.
+__NOTE__ in order for images to be found by the the remote OpenShift instance it must be able to pull images from the staging docker registry.  Noting private networks and insecure-registry flags.
 
 ```groovy
     node{
@@ -389,7 +367,7 @@ __NOTE__ in order for images to be found by the remote OpenShift instance it mus
 
 Deploys the staged fabric8 release to a remote Kubernetes cluster  
 
-__NOTE__ in order for images to be found by the remote OpenShift instance it must be able to pull images from the staging docker registry.  Noting private networks and insecure-registry flags.    
+__NOTE__ in order for images to be found by the the remote OpenShift instance it must be able to pull images from the staging docker registry.  Noting private networks and insecure-registry flags.    
 
 ```groovy
     node{
@@ -401,18 +379,6 @@ __NOTE__ in order for images to be found by the remote OpenShift instance it mus
     }
 ```
 
-#### Add Annotation To Build
-
-Add an annotation to the matching openshift build
-
-```groovy
-    @Library('github.com/fabric8io/fabric8-pipeline-library@master')
-    def dummy
-    node{
-        def utils = new io.fabric8.Utils()
-        utils.addAnnotationToBuild('fabric8.io/foo', 'bar')
-    }
-```
 
 ## Understanding how it works
 
@@ -424,7 +390,7 @@ instead of defining something like:
         containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine', ttyEnabled: true, command: 'cat')
       ],
       volumes: [secretVolume(secretName: 'shared-secrets', mountPath: '/etc/shared-secrets')]) {
-
+      
         node('maven-node') {
             container(name: 'maven') {
                 ...
@@ -441,9 +407,9 @@ You can just use the mavenTemplate provided by this library:
             }
         }
     }
-
+    
 or for ease of use you can directly reference the mavenNode:
-
+    
     mavenNode {
         container(name: 'maven') {
             ...
@@ -456,8 +422,8 @@ A template defines how the jenkins slave pod will look like, but the pod is not 
 When a node is requested the matching template will be selected and pod from the template will be created.
 
 The library provides shortcut function both to nodes and templates. In most cases you will just need to use the node.
-The only exception is when you need to mix and match (see [mixing and matching](#mixing-and-matching)).
-
+The only exception is when you need to mix and match (see [mixing and mathcing](#mixing-and-matching)).
+ 
 
 The provided node / template pairs are the following:
 
@@ -468,7 +434,7 @@ The provided node / template pairs are the following:
 
 #### Maven Node
 
-Provides maven capabilities by adding a container with the maven image.
+Provides maven capabilities by adding a container with the maven image. 
 The container mounts the following volumes:
 
 * Secret `jenkins-maven-settings` Add your maven configuration here.
@@ -485,13 +451,13 @@ Example:
             sh 'mvn clean install'
         }
     }
-
+    
 #### Docker Node
 
-Provides docker capabilities by adding a container with the docker binary.
+Provides docker capabilities by adding a container with the docker binary. 
 The container mounts the following volumes:
 
-* HostPathVolume `/var/run/docker.sock` The docker socket.
+* HostPathVolume `/var/run/docker.sock` The docker socket. 
 
 Host path mounts are not allowed everywhere, so use with caution.
 Also note that the mount will be mounted to all containers in the pod.
@@ -508,7 +474,7 @@ Example:
             sh 'docker build -t myorg/myimage .'
         }
     }
-
+   
 #### Clients Node
 
 Provides access to the `kubectl` and `oc` binaries by adding a container to the pod that provides them.
@@ -521,16 +487,16 @@ Example:
             sh 'kubectl create -f ./target/classes/META-INF/kubernetes/kubernetes.yml'
         }
     }
-
+    
 #### Release Node
 
 Provides docker capabilities by enriching the jenkins slave pod with the proper environment variables and volumes.
 
 * Secret `jenkins-release-gpg` Add your maven configuration here.
-
+ 
 Also the following environment variables will be available to all containers:
-
-* SONATYPE_USERNAME
+                          
+* SONATYPE_USERNAME 
 * SONATYPE_PASSWORD
 * GPG_PASSPHRASE
 * NEXUS_USERNAME
@@ -546,9 +512,9 @@ Example:
             sh 'docker build -t myorg/myimage .'
         }
     }
-
+        
 ### Mixing and matching
-
+        
 There are cases where we might need a more complex setup that may require
 more than a single template. (e.g. a maven container that can run docker builds).
 
@@ -564,8 +530,8 @@ For this case you can combine add the docker template and the maven template tog
         }
     }
 
-The above is equivalent to:
-
+The above is equivalent to: 
+   
     dockerTemplate {
         mavenNode(label: 'maven-and-docker') {
             container(name: 'maven') {
@@ -573,39 +539,40 @@ The above is equivalent to:
             }            
         }
     }
-
+                        
 In the example above we can add release capabilities too, by adding the releaseTemplate:
 
-
+        
             dockerTemplate {
                 releaseTemplate {
                     mavenNode(label: 'maven-and-docker') {
                         container(name: 'maven') {
                             sh """
                                 mvn release:clean release:prepare
-                                mvn clean release:perform
+                                mvn clean release:perform 
                             """
                         }            
                     }
                 }
             }
-
+    
 ### Creating and using your own templates
 
 If the existing selection of templates is limiting you can also create your own templates.
 Templates can be created either by using the Jenkins administration console or by using the groovy.
-
+        
 #### Using the Jenkins Administration Console
 
-In the console choose `Manage Jenkins` -> `Configure System` and scroll down until you find the section `Cloud` -> `Kubernetes`.
-There you can click to `Add Pod Template` to create your own using the wizard.
-
+In the console choose `Manage Jenkins` -> `Configure System` and scroll down until you find the section `Cloud` -> `Kubernetes`. 
+There you can click to `Add Pod Template` to create your own using the wizzard.
+            
 Then you can just instantiate the template by creating a node that references the label to the template:
-
+            
             node('my-custom-template') {
             }
-
+     
 Note: You can use this template to mix and match too. For example you can combine your custom template with an existing one:
-
+     
             mavenNode(inheritFrom: 'my-custom-template') {
             }
+     
