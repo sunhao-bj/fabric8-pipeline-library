@@ -6,8 +6,8 @@ def call(body) {
   body.delegate = config
   body()
 
-  def projectName = config.stagedProject[0]
-  def releaseVersion = config.stagedProject[1]
+  //def projectName = config.stagedProject[0]
+  //def releaseVersion = config.stagedProject[1]
 
   //comment out as we're not using helm charts
   //unstash name:"staged-${projectName}-${releaseVersion}".hashCode().toString()
