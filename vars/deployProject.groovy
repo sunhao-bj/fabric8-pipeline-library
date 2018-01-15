@@ -13,7 +13,6 @@ def call(body) {
   //unstash name:"staged-${projectName}-${releaseVersion}".hashCode().toString()
 
   def rc = readFile config.resourceLocation
-  sh 'echo config.environment'
 
   kubernetesApply(file: rc, environment: config.environment, registry: "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}")
 
