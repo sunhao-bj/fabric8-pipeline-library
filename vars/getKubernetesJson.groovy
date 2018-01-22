@@ -17,10 +17,6 @@ def call(body) {
     def requestMemory = config.resourceRequestMemory ?: '0'
     def limitCPU = config.resourceLimitMemory ?: '0'
     def limitMemory = config.resourceLimitMemory ?: '0'
-    def m = readMavenPom file: 'pom.xml'
-    def groupId = m.groupId.split( '\\.' )
-    def artifactId = m.artifactId
-    def user = groupId[groupId.size()-1].trim()
     def yaml
 
     def isSha = ''
@@ -98,7 +94,7 @@ def deployment = """
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          image: ${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${user}/${artifactId}:${config.version}
+          image: ${fabric8Registry}${env.KUBERNETES_NAMESPACE}/${env.JOB_NAME}:${config.version}
           imagePullPolicy: IfNotPresent
           name: ${env.JOB_NAME}
           ports:
@@ -146,7 +142,7 @@ def deploymentConfig = """
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          image: ${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${user}/${artifactId}:${config.version}
+          image: ${env.JOB_NAME}:${config.version}
           imagePullPolicy: IfNotPresent
           name: ${env.JOB_NAME}
           ports:

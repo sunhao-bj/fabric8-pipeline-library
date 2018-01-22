@@ -35,11 +35,11 @@ def dockerBuild(version){
     def newImageName = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${env.JOB_NAME}:${version}"
 
     sh "docker build -t ${newImageName} ."
-    if (flow.isSingleNode()) {
-        sh "echo 'Running on a single node, skipping docker push as not needed'"
-    } else {
+//    if (flow.isSingleNode()) {
+//        sh "echo 'Running on a single node, skipping docker push as not needed'"
+//    } else {
         sh "docker push ${newImageName}"
-    }
+//    }
 }
 
 def s2iBuild(version){
