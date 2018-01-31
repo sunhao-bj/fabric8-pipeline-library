@@ -31,8 +31,10 @@ def call(body) {
       if (!s2iMode) {
           def utils = new Utils()
           def namespace = utils.getNamespace()
-        retry(3){
+        retry(2){
+            sh "docker images"
             sh "mvn fabric8:push -Ddocker.push.registry=${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}"
+            sh "docker images | grep ear"
         }
       }
 //    }
