@@ -12,6 +12,7 @@ def call(body) {
         label = config.label
         icon = config.icon
         version = config.version
+        exposeApp = config.exposeApp
     }
 
     kubernetesApply(file: yaml, environment: config.environment)
