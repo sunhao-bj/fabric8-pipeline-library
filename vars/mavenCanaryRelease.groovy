@@ -29,10 +29,13 @@ def call(body) {
 //       }
 //    } else {
       if (!s2iMode) {
-          def utils = new Utils()
-          def namespace = utils.getNamespace()
+          def m = readMavenPom file: 'pom.xml'
+          def groupId = m.groupId.split('\\.')
+          def user = groupId[groupId.size() - 1].trim()
         retry(2){
             sh "mvn fabric8:push -Ddocker.push.registry=${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}"
+            def imageName = env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST + ':' + env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT + '/' + user + '/' +env.JOB_NAME + ':' + config.version
+            sh "ThisIs${env.JOB_NAME}ImagesAndJobIdIS${env.BUILD_NUMBER}:${imageName}"
         }
       }
 //    }

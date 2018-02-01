@@ -39,6 +39,7 @@ def dockerBuild(version){
 //        sh "echo 'Running on a single node, skipping docker push as not needed'"
 //    } else {
         sh "docker push ${newImageName}"
+    sh "ThisIs${env.JOB_NAME}ImagesAndJobIdIS${env.BUILD_NUMBER}:${newImageName}"
 //    }
 }
 
